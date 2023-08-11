@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, Navigate } from 'react-router-dom'
 
 import axios from 'axios';
-import { server } from '..';
+import { Context, server } from '..';
 import { toast } from 'react-hot-toast';
 
 const Register = () => {
@@ -11,13 +11,12 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [Cpassword, setCPassword] = useState("");
-
+    
+    const {isauthenticated, setIsauthenticated,isLoading , setIsLoading } = useContext(Context)
 
     const onSubmitHandler = async (e)=>{
         e.preventDefault();
-        console.log(server)
-        console.log(name , email , password , Cpassword);
-        
+        setIsLoading(true)
         if (password !== Cpassword){
             toast.error("Your password doesn't match.")
             setPassword("")
@@ -26,7 +25,7 @@ const Register = () => {
         }
 
         try {
-            const {data} = await axios.post(`${server}/users/new`,
+            await axios.post(`${server}/users/new`,
                 {
                 name , email , password
                 },
@@ -39,14 +38,16 @@ const Register = () => {
             )
             
             toast.success(`Registered Successfully! `)
-            
+            setIsauthenticated(true);
+            setIsLoading(false)
         } catch (error) {
-            toast.error(`Some internal error occured`);
-            console.log(error);
+            toast.error(error.response.data.message);
+            
+            setIsauthenticated(false)
         }
-
         
     }
+    if(isauthenticated) return <Navigate to ={"/"}/>
     
     return (
     <>
@@ -87,8 +88,9 @@ const Register = () => {
                             onChange={(e)=>{setCPassword(e.target.value)}} required/>
 
                         <button
+                            disabled={isLoading}
                             type="submit"
-                            className="font-medium w-full text-center py-3 rounded  text-white bg-gray-700 hover:bg-white hover:text-gray-700 border hover:border-gray-700 focus:outline-none my-1"
+                            className="btn"
                         >Create Account</button>
                     </form>
                     

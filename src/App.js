@@ -8,8 +8,28 @@ import Contact from "./components/contact";
 import Login from "./components/login";
 import Register from "./components/register";
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
+import axios from "axios";
+import { Context, server } from ".";
+import { useContext } from "react";
 
 function App() {
+
+  const {setUser, setIsauthenticated} = useContext(Context)
+  
+  useEffect(()=>{
+
+    axios.get(`${server}/users/myprofile`,{
+      withCredentials: true
+    }).then((res)=>{
+      setUser(res.data.user);
+      setIsauthenticated(true)
+    }).catch((err)=>{
+      setUser({})
+      setIsauthenticated(false)
+    })
+    // eslint-disable-next-line
+    },[]);
   return (
   <>
     <div className="">
