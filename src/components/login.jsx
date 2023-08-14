@@ -3,13 +3,14 @@ import { Link, Navigate } from 'react-router-dom'
 import { Context, server } from '..';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import Loarder from './loarder';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     
-    const {isauthenticated, setIsauthenticated , isLoading , setIsLoading} = useContext(Context)
-
+    const {isauthenticated, setIsauthenticated , isLoading , setIsLoading } = useContext(Context)
+    
     const onSubmitHandler = async(e)=>{
         e.preventDefault();
         setIsLoading(true)
@@ -34,12 +35,14 @@ const Login = () => {
         } catch (error) {
             toast.error(error.response.data.message);
             setIsauthenticated(false)
+            setIsLoading(false);
         }
     }
 
-    if(isauthenticated) return <Navigate to ={"/"}/>
+    if(isauthenticated) return <Navigate to ={"/profile"}/>
     return (
-    <>
+    
+        isLoading?<Loarder/>:(
         <div className="bg-grey-lighter min-h-[80vh] flex flex-col">
             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                 <div className="bg-white px-6 py-1 rounded shadow-md text-black w-full">
@@ -78,7 +81,7 @@ const Login = () => {
                         
             </div>
         </div>    
-    </>
+        )
     )
 }
 

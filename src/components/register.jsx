@@ -4,6 +4,7 @@ import { Link, Navigate } from 'react-router-dom'
 import axios from 'axios';
 import { Context, server } from '..';
 import { toast } from 'react-hot-toast';
+import Loarder from './loarder';
 
 const Register = () => {
 
@@ -13,17 +14,16 @@ const Register = () => {
     const [Cpassword, setCPassword] = useState("");
     
     const {isauthenticated, setIsauthenticated,isLoading , setIsLoading } = useContext(Context)
-
+    setIsLoading(false)
     const onSubmitHandler = async (e)=>{
         e.preventDefault();
-        setIsLoading(true)
         if (password !== Cpassword){
             toast.error("Your password doesn't match.")
             setPassword("")
             setCPassword("")
             return;
         }
-
+        setIsLoading(true)
         try {
             await axios.post(`${server}/users/new`,
                 {
@@ -36,21 +36,23 @@ const Register = () => {
                 withCredentials:true,
                 }
             )
-            
+            setIsLoading(false)
             toast.success(`Registered Successfully! `)
             setIsauthenticated(true);
-            setIsLoading(false)
+            
         } catch (error) {
             toast.error(error.response.data.message);
-            
             setIsauthenticated(false)
+            setIsLoading(false)
         }
         
     }
-    if(isauthenticated) return <Navigate to ={"/"}/>
+
+    if(isauthenticated) return <Navigate to ={"/profile"}/>
     
     return (
-    <>
+        
+        isLoading?<Loarder/>:(
         <div className="bg-grey-lighter min-h-[90vh] flex flex-col">
             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                 <div className="bg-white px-6 py-1 rounded shadow-md text-black w-full">
@@ -105,7 +107,7 @@ const Register = () => {
                 
             </div>
         </div>
-    </>
+        )
     )
 }
 

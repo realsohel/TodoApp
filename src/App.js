@@ -12,31 +12,35 @@ import { useEffect } from "react";
 import axios from "axios";
 import { Context, server } from ".";
 import { useContext } from "react";
+import Tasks from "./components/tasks";
 
 function App() {
 
-  const {setUser, setIsauthenticated} = useContext(Context)
+  const {setUser, setIsauthenticated , setIsLoading} = useContext(Context)
   
   useEffect(()=>{
-
+    setIsLoading(true)
     axios.get(`${server}/users/myprofile`,{
       withCredentials: true
     }).then((res)=>{
       setUser(res.data.user);
       setIsauthenticated(true)
+      setIsLoading(false)
     }).catch((err)=>{
       setUser({})
       setIsauthenticated(false)
+      setIsLoading(false)
     })
     // eslint-disable-next-line
     },[]);
   return (
   <>
-    <div className="">
+    <div className=" ">
       <Router>
         <Navbar/>
         <Routes>
           <Route path="/" element={<Home/>}></Route>
+          <Route path="/tasks" element={<Tasks/>}></Route>
           <Route path="/profile" element={<Profile/>}></Route>
           <Route path="/contact" element={<Contact/>}></Route>
           <Route path="/login" element={<Login/>}></Route>

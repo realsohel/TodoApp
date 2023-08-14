@@ -7,6 +7,10 @@
     padding: 0;
 }
 
+body{
+    background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
 .btn{
     font-weight: 500;
     width: 100%;
